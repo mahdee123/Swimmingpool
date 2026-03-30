@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend } from 'recharts';
 import './index.css';
 import { apiRequest } from './api.js';
@@ -23,6 +24,7 @@ const formatDate = (value) => new Date(value).toISOString().split('T')[0];
 
 const Sidebar = ({ view, setView, user }) => {
   const navigate = useNavigate();
+  const { clearAuth } = useAuth();
   
   const items = user?.role === 'admin'
     ? [
@@ -41,9 +43,7 @@ const Sidebar = ({ view, setView, user }) => {
       ];
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('company');
+    clearAuth();
     navigate('/login');
   };
 

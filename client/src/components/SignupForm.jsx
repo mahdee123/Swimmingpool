@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export default function SignupForm() {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -67,10 +69,8 @@ export default function SignupForm() {
 
       const { token, user, company } = await response.json();
       
-      // Store authentication data
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('company', JSON.stringify(company));
+      // Update auth context
+      setAuth(token, user, company);
 
       // Redirect to dashboard
       navigate('/dashboard');
@@ -180,9 +180,12 @@ export default function SignupForm() {
 
         <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{' '}
-          <a href="/login" className="text-blue-600 hover:text-blue-700 font-medium">
-            Sign in
-          </a>
+          <Link 
+            to="/login" 
+            className="text-blue-600 hover:text-blue-700 font-bold underline transition"
+          >
+            Sign In Here
+          </Link>
         </p>
       </div>
     </div>

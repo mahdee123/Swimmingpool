@@ -49,3 +49,13 @@ API defaults to http://localhost:4000 and frontend to http://localhost:5173.
 
 ## Printing Receipts
 Use the in-app "Save & Print" action to store a bill then trigger the browser print dialog for a hard copy or PDF export.
+
+## Deployment
+For comprehensive deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md).
+
+**Quick Summary:**
+- **Frontend**: Deploy on [Vercel](https://vercel.com) (automatic from GitHub)
+- **Backend**: Deploy on [Railway](https://railway.app) or [Render](https://render.com)
+- **Database**: Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) (free tier available)
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for step-by-step setup instructions.

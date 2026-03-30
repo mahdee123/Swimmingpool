@@ -174,7 +174,9 @@ router.get('/stats/bills', authRequired, requireRole('admin', 'manager'), valida
 router.delete('/:id', authRequired, requireRole('admin', 'manager'), validateCompanyContext, async (req, res) => {
   try {
     const Transaction = getCompanyModel(req.companyDb, 'Transaction');
-    const transaction = await Transaction.findByIdAndDelete(req.params.id);
+    const transaction = await Transaction.findOneAndDelete(
+      { _id: req.params.id, companyId: req.companyId }
+    );
     if (!transaction) {
       return res.status(404).json({ error: 'Transaction not found' });
     }

@@ -20,14 +20,18 @@ router.get('/', authRequired, requireRole('admin'), validateCompanyContext, asyn
 
 router.patch('/:id', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const Package = getCompanyModel(req.companyDb, 'Package');
-  const pkg = await Package.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const pkg = await Package.findByIdAndUpdate(
+    { _id: req.params.id, companyId: req.companyId },
+    req.body,
+    { new: true }
+  );
   if (!pkg) return res.status(404).json({ message: 'Package not found' });
   return res.json({ package: pkg });
 });
 
 router.patch('/:id/status', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const Package = getCompanyModel(req.companyDb, 'Package');
-  const pkg = await Package.findById(req.params.id);
+  const pkg = await Package.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!pkg) return res.status(404).json({ message: 'Package not found' });
   pkg.active = !pkg.active;
   await pkg.save();

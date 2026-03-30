@@ -127,7 +127,7 @@ router.post('/students/:id/classes', authRequired, requireRole('admin'), validat
   const Student = getCompanyModel(req.companyDb, 'Student');
   const ClassRecord = getCompanyModel(req.companyDb, 'ClassRecord');
   
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
   const recordDate = new Date(date || new Date());
   if (recordDate > student.endDate) {
@@ -215,7 +215,7 @@ router.get('/students/:id/progress', authRequired, requireRole('admin'), validat
   const Student = getCompanyModel(req.companyDb, 'Student');
   const ClassRecord = getCompanyModel(req.companyDb, 'ClassRecord');
   
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
   const records = await ClassRecord.find({ companyId: req.companyId, student: student._id }).sort({ date: -1 });
   return res.json({ student, records });
@@ -224,7 +224,7 @@ router.get('/students/:id/progress', authRequired, requireRole('admin'), validat
 // GET single student (for profile view)
 router.get('/students/:id', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const Student = getCompanyModel(req.companyDb, 'Student');
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
   return res.json({ student });
 });
@@ -235,7 +235,7 @@ router.post('/students/:id/pay-due', authRequired, requireRole('admin'), validat
   const Student = getCompanyModel(req.companyDb, 'Student');
   const Transaction = getCompanyModel(req.companyDb, 'Transaction');
   
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
 
   if (student.due <= 0) {
@@ -308,7 +308,7 @@ router.put('/students/:id', authRequired, requireRole('admin'), validateCompanyC
   const { name, phone, batchType, classSlot, endDate, discount, amountPaid } = req.body;
   const Student = getCompanyModel(req.companyDb, 'Student');
   
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
 
   // Validate slot change if changing classSlot
@@ -367,7 +367,7 @@ router.post('/students/:id/status', authRequired, requireRole('admin'), validate
     return res.status(400).json({ message: 'Invalid status' });
   }
 
-  const student = await Student.findById(req.params.id);
+  const student = await Student.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!student) return res.status(404).json({ message: 'Student not found' });
 
   student.status = status;

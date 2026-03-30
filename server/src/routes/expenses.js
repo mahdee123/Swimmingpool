@@ -27,7 +27,6 @@ router.post('/', authRequired, requireRole('admin'), validateCompanyContext, asy
     const Expense = getCompanyModel(req.companyDb, 'Expense');
     const expense = new Expense({
       companyId: req.companyId,
-      companyId: req.companyId,
       date: date ? new Date(date) : new Date(),
       title: title.trim(),
       category,
@@ -145,7 +144,11 @@ router.patch('/:id', authRequired, requireRole('admin'), validateCompanyContext,
     if (note !== undefined) updateData.note = note.trim();
 
     const Expense = getCompanyModel(req.companyDb, 'Expense');
-    const expense = await Expense.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    const expense = await Expense.findByIdAndUpdate(
+      { _id: id, companyId: req.companyId },
+      updateData,
+      { new: true, runValidators: true }
+    );
 
     if (!expense) {
       return res.status(404).json({ message: 'Expense not found' });

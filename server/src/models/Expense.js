@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 
 const expenseSchema = new mongoose.Schema(
   {
+    companyId: { type: mongoose.Schema.Types.ObjectId, required: true, index: true },
     date: { type: Date, default: Date.now, required: true },
     title: { type: String, required: true },
     category: {

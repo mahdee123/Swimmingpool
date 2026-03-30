@@ -150,7 +150,11 @@ router.get('/', authRequired, requireRole('admin'), validateCompanyContext, asyn
 router.patch('/:id/status', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const { status } = req.body;
   const Member = getCompanyModel(req.companyDb, 'Member');
-  const member = await Member.findByIdAndUpdate(req.params.id, { status }, { new: true });
+  const member = await Member.findByIdAndUpdate(
+    { _id: req.params.id, companyId: req.companyId },
+    { status },
+    { new: true }
+  );
   if (!member) return res.status(404).json({ message: 'Member not found' });
   return res.json({ member });
 });
@@ -158,7 +162,7 @@ router.patch('/:id/status', authRequired, requireRole('admin'), validateCompanyC
 // GET single member (for profile view)
 router.get('/:id', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const Member = getCompanyModel(req.companyDb, 'Member');
-  const member = await Member.findById(req.params.id);
+  const member = await Member.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!member) return res.status(404).json({ message: 'Member not found' });
   return res.json({ member });
 });
@@ -167,7 +171,7 @@ router.get('/:id', authRequired, requireRole('admin'), validateCompanyContext, a
 router.put('/:id', authRequired, requireRole('admin'), validateCompanyContext, async (req, res) => {
   const { name, phone, address, plan } = req.body;
   const Member = getCompanyModel(req.companyDb, 'Member');
-  const member = await Member.findById(req.params.id);
+  const member = await Member.findOne({ _id: req.params.id, companyId: req.companyId });
   if (!member) return res.status(404).json({ message: 'Member not found' });
 
   if (name) member.name = name;
